@@ -84,8 +84,6 @@
 
     window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
   });
-  <script src="http://open.sojson.com/common/js/canvas-nest.min.js" count="200" zindex="-2" opacity="0.5" color="47,135,193" type="text/javascript"> 
-  </script>
 
   // Caption
   $('.article-entry').each(function(i){
