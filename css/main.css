@@ -1090,7 +1090,7 @@ pre .javascript .function {
   bottom: 19px;
 }
 .header {
-  background: url("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1515341021526&di=f8e66abf49e71a9eaeac24a3d937867a&imgtype=0&src=http%3A%2F%2Fe.hiphotos.baidu.com%2Fzhidao%2Fpic%2Fitem%2Faa64034f78f0f736eb88c9140955b319ebc413b4.jpg");
+  background: transparent;
 }
 .header-inner {
   position: relative;
@@ -1822,7 +1822,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #00426e;
+  background: #341674;
 }
 .links-of-blogroll {
   font-size: 13px;
