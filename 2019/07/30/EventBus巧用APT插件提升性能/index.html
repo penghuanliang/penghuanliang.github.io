@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Android,源码分析," />
 
 
 
@@ -79,16 +79,18 @@
 
 
 
-<meta name="description" content="天下事有难易乎？为之，则难者亦易矣；不为，则易者亦难矣。">
-<meta property="og:type" content="website">
-<meta property="og:title" content="天师">
-<meta property="og:url" content="http://yoursite.com/tags/动画/index.html">
+<meta name="description" content="在上一篇研究了EventBus源码时，默认情况下EventBus是通过在运行时反射的方式去获取订阅者中所有@Subscribe注解的方法信息，这种方式是比较损耗性能的。 EventBus是如何提升效率？ 与Butterknife类似，采用编译时注解，在项目编译时将所有的订阅者注解的方法集中到生成class文件中，通过这种方式有效的避免了反射获取注解类的方法信息带来的性能损耗。  基本使用 在项目中">
+<meta name="keywords" content="Android,源码分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="EventBus巧用APT插件提升性能">
+<meta property="og:url" content="http://yoursite.com/2019/07/30/EventBus巧用APT插件提升性能/index.html">
 <meta property="og:site_name" content="天师">
-<meta property="og:description" content="天下事有难易乎？为之，则难者亦易矣；不为，则易者亦难矣。">
+<meta property="og:description" content="在上一篇研究了EventBus源码时，默认情况下EventBus是通过在运行时反射的方式去获取订阅者中所有@Subscribe注解的方法信息，这种方式是比较损耗性能的。 EventBus是如何提升效率？ 与Butterknife类似，采用编译时注解，在项目编译时将所有的订阅者注解的方法集中到生成class文件中，通过这种方式有效的避免了反射获取注解类的方法信息带来的性能损耗。  基本使用 在项目中">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-30T04:41:27.813Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="天师">
-<meta name="twitter:description" content="天下事有难易乎？为之，则难者亦易矣；不为，则易者亦难矣。">
+<meta name="twitter:title" content="EventBus巧用APT插件提升性能">
+<meta name="twitter:description" content="在上一篇研究了EventBus源码时，默认情况下EventBus是通过在运行时反射的方式去获取订阅者中所有@Subscribe注解的方法信息，这种方式是比较损耗性能的。 EventBus是如何提升效率？ 与Butterknife类似，采用编译时注解，在项目编译时将所有的订阅者注解的方法集中到生成class文件中，通过这种方式有效的避免了反射获取注解类的方法信息带来的性能损耗。  基本使用 在项目中">
 
 
 
@@ -118,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/tags/动画/"/>
+  <link rel="canonical" href="http://yoursite.com/2019/07/30/EventBus巧用APT插件提升性能/"/>
 
 
 
 
 
-  <title>标签: 动画 | 天师</title>
+  <title>EventBus巧用APT插件提升性能 | 天师</title>
   
 
 
@@ -143,7 +145,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -269,54 +271,190 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block tag">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>动画<small>标签</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/30/EventBus巧用APT插件提升性能/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="欢亮">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天师">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2018/01/07/动画/" itemprop="url">
-              
-                <span itemprop="name">动画</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">EventBus巧用APT插件提升性能</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-01-07T10:10:12+08:00"
-              content="2018-01-07" >
-          01-07
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-30T12:36:52+08:00">
+                2019-07-30
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/源码分析/" itemprop="url" rel="index">
+                    <span itemprop="name">源码分析</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在上一篇研究了<a href="https://penghuanliang.github.io/2019/07/29/EventBus%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" target="_blank" rel="external">EventBus源码</a>时，默认情况下EventBus是通过在运行时反射的方式去获取订阅者中所有@Subscribe注解的方法信息，这种方式是比较损耗性能的。</p>
+<h3 id="EventBus是如何提升效率？"><a href="#EventBus是如何提升效率？" class="headerlink" title="EventBus是如何提升效率？"></a>EventBus是如何提升效率？</h3><blockquote>
+<p>与Butterknife类似，采用编译时注解，在项目编译时将所有的订阅者注解的方法集中到生成class文件中，通过这种方式有效的避免了反射获取注解类的方法信息带来的性能损耗。</p>
+</blockquote>
+<h3 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h3><blockquote>
+<p>在项目中集成apt插件</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">    defaultConfig &#123;</div><div class="line">        javaCompileOptions &#123;</div><div class="line">            annotationProcessorOptions &#123;</div><div class="line">                <span class="comment">//EventBus 通过apt插件生成类的位置</span></div><div class="line">                arguments = [eventBusIndex : applicationId + <span class="string">'.eventbus.CustomEventBusIndex'</span>]</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">dependencies &#123;</div><div class="line">    <span class="comment">//加入EventBus</span></div><div class="line">    implementation <span class="string">'org.greenrobot:eventbus:3.1.1'</span></div><div class="line">    <span class="comment">//注解加入</span></div><div class="line">    annotationProcessor <span class="string">'org.greenrobot:eventbus-annotation-processor:3.1.1'</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>先Make Project，apt插件会帮我们生成CustomEventBusIndex</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomEventBusIndex</span> <span class="keyword">implements</span> <span class="title">SubscriberInfoIndex</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Map&lt;Class&lt;?&gt;, SubscriberInfo&gt; SUBSCRIBER_INDEX;</div><div class="line"></div><div class="line">    <span class="comment">//对象初始化的时候将所有订阅者及注解方法信息统一存储</span></div><div class="line">    <span class="keyword">static</span> &#123;</div><div class="line">        SUBSCRIBER_INDEX = <span class="keyword">new</span> HashMap&lt;Class&lt;?&gt;, SubscriberInfo&gt;();</div><div class="line"></div><div class="line">        putIndex(<span class="keyword">new</span> SimpleSubscriberInfo(com.custom.plugin.MainActivity.class, <span class="keyword">true</span>, <span class="keyword">new</span> SubscriberMethodInfo[] &#123;</div><div class="line">            <span class="keyword">new</span> SubscriberMethodInfo(<span class="string">"doSomething"</span>, com.custom.plugin.bean.SendBean.class, ThreadMode.MAIN, <span class="number">100</span>, <span class="keyword">true</span>),</div><div class="line">            <span class="keyword">new</span> SubscriberMethodInfo(<span class="string">"doBackgroundThing"</span>, com.custom.plugin.bean.TBean.class, ThreadMode.MAIN_ORDERED,</div><div class="line">                    <span class="number">100</span>, <span class="keyword">false</span>),</div><div class="line">        &#125;));</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">putIndex</span><span class="params">(SubscriberInfo info)</span> </span>&#123;</div><div class="line">        SUBSCRIBER_INDEX.put(info.getSubscriberClass(), info);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 该方法在SubscriberMethodFinder#findUsingInfo()中调用</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> SubscriberInfo <span class="title">getSubscriberInfo</span><span class="params">(Class&lt;?&gt; subscriberClass)</span> </span>&#123;</div><div class="line">        SubscriberInfo info = SUBSCRIBER_INDEX.get(subscriberClass);</div><div class="line">        <span class="keyword">if</span> (info != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span> info;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>EventBus自定义初始化</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyApplication</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate();</div><div class="line">        <span class="comment">//通过build方式构建EventBus</span></div><div class="line">        EventBus.builder()</div><div class="line">            	<span class="comment">//若为true,则是通过反射方式，默认是false,先从获取eventBusIndex，若为null再通过反射调用</span></div><div class="line">                .ignoreGeneratedIndex(<span class="keyword">false</span>)</div><div class="line">            	<span class="comment">//自定义添加apt生成的类</span></div><div class="line">                .addIndex(<span class="keyword">new</span> CustomEventBusIndex())</div><div class="line">            	<span class="comment">//构建EventBus</span></div><div class="line">                .installDefaultEventBus();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>通过APT插件获取所有订阅者注解信息放入生成class类中，避免运行时反射带来的性能损耗了。</p>
+<p>EventBus到这里就分析完毕了，感谢观看。</p>
+</blockquote>
 
       
     </div>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/源码分析/" rel="tag"># 源码分析</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/29/EventBus源码分析/" rel="next" title="EventBus源码分析">
+                <i class="fa fa-chevron-left"></i> EventBus源码分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -324,6 +462,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -344,8 +486,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -433,6 +584,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#EventBus是如何提升效率？"><span class="nav-number">1.</span> <span class="nav-text">EventBus是如何提升效率？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本使用"><span class="nav-number">2.</span> <span class="nav-text">基本使用</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -573,6 +740,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
 
   
 
