@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="天师">
 <meta property="og:description" content="为什么会有本篇文章？ 现在很多主流库都是通过APT(Annotation Processing Tool 简称注解处理工具)在代码编译时期，通过解析注解，并且生成新能Java文件，减少开发者手动书写代码，极大的提升了开发效率。 本篇在学习APT开发时随手记录的，先简单介绍一下注解、然后写一个小Demo加深印象。  Annotation官网描述 The common interface extend">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-01T08:38:16.199Z">
+<meta property="og:updated_time" content="2019-08-01T08:40:26.653Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="注解笔记">
 <meta name="twitter:description" content="为什么会有本篇文章？ 现在很多主流库都是通过APT(Annotation Processing Tool 简称注解处理工具)在代码编译时期，通过解析注解，并且生成新能Java文件，减少开发者手动书写代码，极大的提升了开发效率。 本篇在学习APT开发时随手记录的，先简单介绍一下注解、然后写一个小Demo加深印象。  Annotation官网描述 The common interface extend">
@@ -416,7 +416,7 @@
 </tr>
 </tbody>
 </table>
-<table><br>    <thead><br>        <tr><br>            <th style="width: 100px;">注解</th><br>            <th align="center">描述</th><br>        </tr><br>    </thead><br>    <tbody><br>       <tr><br>           <td align="center">@Retention</td><br>           <td align="left">用来定义注解的生命周期，由RetentionPolicy枚举类定义<br>SOURCE:注解在编译器时就会丢弃，不会保留在编译后的class文件中<br>CLASS：注解会保留在class文件中，但是不会加载到JVM中，在运行时候反射是无法获取到相关注解属性<br>RUNTIME:从编译、加载、运行期间会一直保留，可以通过反射的方式获取<br>           </td><br>       </tr><br>       <tr><br>           <td align="center">@Target</td><br>           <td align="left">注解的作用域，ElementType枚举类定义<br>CONSTRUCTOR：注解用于  构造函数<br>FIELD：注解用于 成员变量（包括枚举）<br>LOCAL_VARIABLE：注解用于  局部变量<br>METHOD：注解用于  方法<br>PACKAGE：注解用于 包<br>PARAMETER：注解用于 方法中参数<br>TYPE：注解用于  类、接口、枚举类<br>ANNOTATION_TYPE：注解用于 注解，该注解属于元注解</td><br>       </tr><br>       <tr><br>       </tr><br>            <td>@Documented</td><br>            <td>表示注解会被包含在Java API文档中</td><br>       <tr><br>            <td>@Inherited</td><br>            <td>允许子类继承父类的注解</td><br>       </tr><br>    </tbody><br></table>
+<table style="padding:0px;margin:0px;"><br>    <thead><br>        <tr><br>            <th style="width: 100px;">注解</th><br>            <th align="center">描述</th><br>        </tr><br>    </thead><br>    <tbody><br>       <tr><br>           <td align="center">@Retention</td><br>           <td align="left">用来定义注解的生命周期，由RetentionPolicy枚举类定义<br>SOURCE:注解在编译器时就会丢弃，不会保留在编译后的class文件中<br>CLASS：注解会保留在class文件中，但是不会加载到JVM中，在运行时候反射是无法获取到相关注解属性<br>RUNTIME:从编译、加载、运行期间会一直保留，可以通过反射的方式获取<br>           </td><br>       </tr><br>       <tr><br>           <td align="center">@Target</td><br>           <td align="left">注解的作用域，ElementType枚举类定义<br>CONSTRUCTOR：注解用于  构造函数<br>FIELD：注解用于 成员变量（包括枚举）<br>LOCAL_VARIABLE：注解用于  局部变量<br>METHOD：注解用于  方法<br>PACKAGE：注解用于 包<br>PARAMETER：注解用于 方法中参数<br>TYPE：注解用于  类、接口、枚举类<br>ANNOTATION_TYPE：注解用于 注解，该注解属于元注解</td><br>       </tr><br>       <tr><br>       </tr><br>            <td>@Documented</td><br>            <td>表示注解会被包含在Java API文档中</td><br>       <tr><br>            <td>@Inherited</td><br>            <td>允许子类继承父类的注解</td><br>       </tr><br>    </tbody><br></table>
 
 
 
