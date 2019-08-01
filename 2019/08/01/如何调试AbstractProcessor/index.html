@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="工具," />
 
 
 
@@ -79,16 +79,23 @@
 
 
 
-<meta name="description" content="天下事有难易乎？为之，则难者亦易矣；不为，则易者亦难矣。">
-<meta property="og:type" content="website">
-<meta property="og:title" content="天师">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="背景由来在自定义ButterKnife时，通过APT方式生成Java代码，因为是编译时期生成，我们无法像Android项目一般运行起来之后通过debug方式来调试，一旦项目无法调试，对于开发者来说是一件很痛苦的事情，下面我们介绍如何 debug 自定义 AbstractProcessor 项目准备阶段 需要配置Gradle环境变量，后期需要通过gradle命令开启守护线程，以及项目构建  开始配置">
+<meta name="keywords" content="工具">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何调试AbstractProcessor">
+<meta property="og:url" content="http://yoursite.com/2019/08/01/如何调试AbstractProcessor/index.html">
 <meta property="og:site_name" content="天师">
-<meta property="og:description" content="天下事有难易乎？为之，则难者亦易矣；不为，则易者亦难矣。">
+<meta property="og:description" content="背景由来在自定义ButterKnife时，通过APT方式生成Java代码，因为是编译时期生成，我们无法像Android项目一般运行起来之后通过debug方式来调试，一旦项目无法调试，对于开发者来说是一件很痛苦的事情，下面我们介绍如何 debug 自定义 AbstractProcessor 项目准备阶段 需要配置Gradle环境变量，后期需要通过gradle命令开启守护线程，以及项目构建  开始配置">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://penghuanliang.github.io/images/pics/ic_remote_debug1.jpg">
+<meta property="og:image" content="https://penghuanliang.github.io/images/pics/ic_remote_debug2.jpg">
+<meta property="og:image" content="https://penghuanliang.github.io/images/pics/ic_remote_debug3.jpg">
+<meta property="og:image" content="https://penghuanliang.github.io/images/pics/ic_remote_debug4.png">
+<meta property="og:updated_time" content="2019-08-01T10:09:29.810Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="天师">
-<meta name="twitter:description" content="天下事有难易乎？为之，则难者亦易矣；不为，则易者亦难矣。">
+<meta name="twitter:title" content="如何调试AbstractProcessor">
+<meta name="twitter:description" content="背景由来在自定义ButterKnife时，通过APT方式生成Java代码，因为是编译时期生成，我们无法像Android项目一般运行起来之后通过debug方式来调试，一旦项目无法调试，对于开发者来说是一件很痛苦的事情，下面我们介绍如何 debug 自定义 AbstractProcessor 项目准备阶段 需要配置Gradle环境变量，后期需要通过gradle命令开启守护线程，以及项目构建  开始配置">
+<meta name="twitter:image" content="https://penghuanliang.github.io/images/pics/ic_remote_debug1.jpg">
 
 
 
@@ -118,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://yoursite.com/2019/08/01/如何调试AbstractProcessor/"/>
 
 
 
 
 
-  <title>天师</title>
+  <title>如何调试AbstractProcessor | 天师</title>
   
 
 
@@ -143,8 +150,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -269,9 +275,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -301,9 +307,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/01/如何调试AbstractProcessor/" itemprop="url">如何调试AbstractProcessor</a></h1>
+          <h1 class="post-title" itemprop="name headline">如何调试AbstractProcessor</h1>
         
 
         <div class="post-meta">
@@ -375,20 +379,54 @@
       
 
       
-        
-          
-          背景由来在自定义ButterKnife时，通过APT方式生成Java代码，因为是编译时期生成，我们无法像Android项目一般运行起来之后通过debug方式来调试，一旦项目无法调试，对于开发者来说是一件很痛苦的事情，下面我们介绍如何 debug 自定义
-AbstractProcessor
-项目准备阶
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/08/01/如何调试AbstractProcessor/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
+        <h5 id="背景由来"><a href="#背景由来" class="headerlink" title="背景由来"></a>背景由来</h5><p>在自定义ButterKnife时，通过APT方式生成Java代码，因为是编译时期生成，我们无法像Android项目一般运行起来之后通过debug方式来调试，一旦项目无法调试，对于开发者来说是一件很痛苦的事情，下面我们介绍如何 <strong>debug</strong> 自定义</p>
+<p><strong>AbstractProcessor</strong></p>
+<h5 id="项目准备阶段"><a href="#项目准备阶段" class="headerlink" title="项目准备阶段"></a>项目准备阶段</h5><blockquote>
+<p>需要配置Gradle环境变量，后期需要通过gradle命令开启守护线程，以及项目构建</p>
+</blockquote>
+<h5 id="开始配置"><a href="#开始配置" class="headerlink" title="开始配置"></a>开始配置</h5><ul>
+<li>在AS中点击 <strong>Edit Configurations</strong> ，如图所示：</li>
+</ul>
+<p><img src="https://penghuanliang.github.io/images/pics/ic_remote_debug1.jpg" alt="Edit Configurations"></p>
+<ul>
+<li>创建Remote Debug，如图所示：</li>
+</ul>
+<p><img src="https://penghuanliang.github.io/images/pics/ic_remote_debug2.jpg" alt="Remote Debug"></p>
+<blockquote>
+<p>第一步： 点击左上角添加按钮，在弹窗中选中remote</p>
+<p>第二步：给Remote调试随意取个名字</p>
+<p>第三步：设置Host，Port ，一般默认就行，如果有多个请更改端口</p>
+<p>第四步：复制刚刚配置的参数，-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</p>
+<p>最后点击Ok创建就行</p>
+</blockquote>
+<ul>
+<li>配置gradle.properties文件</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#将刚刚生成的 -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 填入</span></div><div class="line">org.gradle.daemon=<span class="literal">true</span></div><div class="line">org.gradle.jvmargs=-agentlib:jdwp=transport=dt_socket,server=y,<span class="built_in">suspend</span>=n,address=5005</div></pre></td></tr></table></figure>
+<ul>
+<li>打开命令窗口开启守护线程</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#开启守护线程</span></div><div class="line">$ gradle --daemon</div><div class="line"><span class="comment">#提示build successful 表示开启成功了</span></div><div class="line">$ BUILD SUCCESSFUL <span class="keyword">in</span> 11s</div><div class="line">$ 1 actionable task: 1 executed</div></pre></td></tr></table></figure>
+<ul>
+<li>选择刚刚添加的Remote Debug，在项目中打好断点，开启debug模式，如图所示：</li>
+</ul>
+<p><img src="https://penghuanliang.github.io/images/pics/ic_remote_debug3.jpg" alt="开启Debug模式"></p>
+<blockquote>
+<p>点击小虫子后显示：Connected to the target VM, address: ‘localhost:5005’, transport: ‘socket’表示开启成功，如果提示连接不上，请重复上一步骤</p>
+</blockquote>
+<ul>
+<li>最后通过输入gradle命令进行构建</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#定位到相应的项目目录下面构建</span></div><div class="line"><span class="variable">$gradle</span> clean assembleDebug</div></pre></td></tr></table></figure>
+<blockquote>
+<p>这里执行了两个task：</p>
+<p>task clean ：delete rootProject.buildDir</p>
+<p>task assembleDebug ：系统封装好的debug构建 task</p>
+</blockquote>
+<p>执行上述命令之后，表示已经成功进入调试了</p>
+<p><img src="https://penghuanliang.github.io/images/pics/ic_remote_debug4.png" alt="成功如图所示"></p>
+<p>到这里就结束了，感谢观看。</p>
+
       
     </div>
     
@@ -403,314 +441,36 @@ AbstractProcessor
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/01/注解笔记/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="欢亮">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="天师">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/01/注解笔记/" itemprop="url">注解笔记</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-01T15:38:23+08:00">
-                2019-08-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/随手记/" itemprop="url" rel="index">
-                    <span itemprop="name">随手记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
+            <a href="/tags/工具/" rel="tag"># 工具</a>
           
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
+      
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
+      
       
       
 
       
-        
-          
-          为什么会有本篇文章？
-现在很多主流库都是通过APT(Annotation Processing Tool 简称注解处理工具)在代码编译时期，通过解析注解，并且生成新能Java文件，减少开发者手动书写代码，极大的提升了开发效率。
-本篇在学习APT开发时随手记录的，先简单介绍一下注解、然后写一个小Dem
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/08/01/注解笔记/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/01/注解笔记/" rel="next" title="注解笔记">
+                <i class="fa fa-chevron-left"></i> 注解笔记
+              </a>
+            
           </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
 
-    
+          <span class="post-nav-divider"></span>
 
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/30/EventBus巧用APT插件提升性能/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="欢亮">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="天师">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/30/EventBus巧用APT插件提升性能/" itemprop="url">EventBus巧用APT插件提升性能</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
+          <div class="post-nav-prev post-nav-item">
             
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-30T12:36:52+08:00">
-                2019-07-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/源码分析/" itemprop="url" rel="index">
-                    <span itemprop="name">源码分析</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          
-          在上一篇研究了EventBus源码时，默认情况下EventBus是通过在运行时反射的方式去获取订阅者中所有@Subscribe注解的方法信息，这种方式是比较损耗性能的。
-EventBus是如何提升效率？
-与Butterknife类似，采用编译时注解，在项目编译时将所有的订阅者注解的方法集中到生成cl
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/07/30/EventBus巧用APT插件提升性能/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -720,787 +480,11 @@ EventBus是如何提升效率？
   </article>
 
 
-    
-      
 
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/29/EventBus源码分析/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="欢亮">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="天师">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/29/EventBus源码分析/" itemprop="url">EventBus源码分析</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-29T17:46:15+08:00">
-                2019-07-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/源码分析/" itemprop="url" rel="index">
-                    <span itemprop="name">源码分析</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          EventBus简介EventBus是一种基于Android的事件发布-订阅总线。
-
-EventBus官网描述：
-
-simplifies the communication between components
-decouples event senders and receivers
-perfor
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/07/29/EventBus源码分析/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
+    <div class="post-spread">
       
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
   </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/11/分享/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="欢亮">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="天师">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/11/分享/" itemprop="url">分享</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-11T19:32:34+08:00">
-                2018-09-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/分享/" itemprop="url" rel="index">
-                    <span itemprop="name">分享</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          主题：开心有趣、健康
-姓名：彭欢亮
-时间：201/9/11  星期二    20:23:12
-描述：本文素材均来源于网络，非本人出品
-
-众所周知笑对人体的好处多多，不过小心过犹不及，乐极生悲。微笑又或者是开怀大笑都是有莫大的好处的。
-开心一刻
-
-
-
-
-
-来自小学生试卷：
-
-这位同学对饮食健康很有研究
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/09/11/分享/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/09/反射笔记/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="欢亮">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="天师">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/04/09/反射笔记/" itemprop="url">反射笔记</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-09T21:58:45+08:00">
-                2018-04-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          反射1. 反射定义：
-JAVA反射机制是在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意一个方法和属性；这种动态获取的信息以及动态调用对象的方法的功能称为java语言的反射机制。要想解剖一个类,必须先要获取到该类的字节码文件对象。而解剖使用的就是C
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/04/09/反射笔记/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/15/官网基础/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="欢亮">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="天师">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/01/15/官网基础/" itemprop="url">官网基础</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-15T20:28:58+08:00">
-                2018-01-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          官网基础定义样式要创建一组样式，请在您的项目的 res/values/ 目录中保存一个 XML 文件。 可任意指定该 XML 文件的名称，但它必须使用 .xml 扩展名，并且必须保存在 res/values/ 文件夹内。
-该 XML 文件的根节点必须是 &lt;resources&gt;。
-对于您想
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/01/15/官网基础/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/07/动画/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="欢亮">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="天师">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/01/07/动画/" itemprop="url">动画</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-07T10:10:12+08:00">
-                2018-01-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/动画/" itemprop="url" rel="index">
-                    <span itemprop="name">动画</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          动画笔记
-作者：彭欢亮  
-时间：2018/1/7 星期日 上午 10:10:10 
-
-Android 动画的分类 ： 
-一、帧动画
-实现帧动画的两种方式 
-
-
-利用xml形式实现
-
-
-在drawable目录下创建一个animation-list xml 文件，
-
-12345678910111213
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/01/07/动画/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-  </section>
-
-  
 
 
           </div>
@@ -1508,6 +492,10 @@ Android 动画的分类 ：
 
 
           
+
+  
+
+
 
         </div>
         
@@ -1528,8 +516,17 @@ Android 动画的分类 ：
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -1617,6 +614,22 @@ Android 动画的分类 ：
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#背景由来"><span class="nav-number">1.</span> <span class="nav-text">背景由来</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#项目准备阶段"><span class="nav-number">2.</span> <span class="nav-text">项目准备阶段</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#开始配置"><span class="nav-number">3.</span> <span class="nav-text">开始配置</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -1757,6 +770,10 @@ Android 动画的分类 ：
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
 
   
 
