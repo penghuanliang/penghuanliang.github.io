@@ -3,6 +3,90 @@
   
     
     <entry>
+      <title><![CDATA[注解笔记]]></title>
+      <url>/2019/08/01/%E6%B3%A8%E8%A7%A3%E7%AC%94%E8%AE%B0/</url>
+      <content type="html"><![CDATA[<h5 id="为什么会有本篇文章？"><a href="#为什么会有本篇文章？" class="headerlink" title="为什么会有本篇文章？"></a>为什么会有本篇文章？</h5><blockquote>
+<p>现在很多主流库都是通过APT(Annotation Processing Tool 简称注解处理工具)在代码编译时期，通过解析注解，并且生成新能Java文件，减少开发者手动书写代码，极大的提升了开发效率。</p>
+<p>本篇在学习APT开发时随手记录的，先简单介绍一下注解、然后写一个小Demo加深印象。</p>
+</blockquote>
+<h5 id="Annotation官网描述"><a href="#Annotation官网描述" class="headerlink" title="Annotation官网描述"></a>Annotation官网描述</h5><blockquote>
+<p>The common interface extended by all annotation types. Note that an interface that manually extends this one does <em>not</em> define an annotation type. Also note that this interface does not itself define an annotation type.</p>
+<p>大致的意思是：所有的注解类型接口都继承Annotation接口，自定义继承Annotation不会定义注解类型。</p>
+<p>个人认为：注解就相当于代码注释一样，然后我们可以通过获取到其属性做一下相关操作，从而优化整个项目。</p>
+</blockquote>
+<h5 id="基本介绍："><a href="#基本介绍：" class="headerlink" title="基本介绍："></a>基本介绍：</h5><p>​    举例介绍</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//本身BindView是一个注解，@Retention</span></div><div class="line"><span class="meta">@Retention</span>(RetentionPolicy.CLASS)</div><div class="line"><span class="meta">@Target</span>(ElementType.FIELD)</div><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> BindView &#123;</div><div class="line">	<span class="comment">//可以给定一个默认值</span></div><div class="line">    <span class="meta">@IdRes</span> <span class="function"><span class="keyword">int</span> <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> -1</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>继承至Annotation接口的接口，如@BindVeiw、@Retention、@Target都属于注解，但是@Retention、@Target又有区别，它们定义为：<strong>元注解</strong></p>
+</blockquote>
+<h5 id="元注解定义："><a href="#元注解定义：" class="headerlink" title="元注解定义："></a>元注解定义：</h5><p>​    定义在注解上面的注解，我们就称为元注解，它与一般注解的区别就在于Target的作用范围，举例说明</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//@Documented 将注解中的元素包含到 Javadoc 中去</span></div><div class="line"><span class="meta">@Documented</span></div><div class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</div><div class="line"><span class="comment">//这里作用于ANNOTATION_TYPE，所以@Retention属于元注解</span></div><div class="line"><span class="meta">@Target</span>(&#123;ElementType.ANNOTATION_TYPE&#125;)</div><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Retention &#123;</div><div class="line">    <span class="function">RetentionPolicy <span class="title">value</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="下面主要介绍-Retention、-Target、-Documented、-Inherited四种常见注解"><a href="#下面主要介绍-Retention、-Target、-Documented、-Inherited四种常见注解" class="headerlink" title="下面主要介绍@Retention、@Target、@Documented、@Inherited四种常见注解"></a>下面主要介绍@Retention、@Target、@Documented、@Inherited四种常见注解</h5><table>
+<thead>
+<tr>
+<th style="text-align:left"><center>注解</center></th>
+<th style="text-align:left"><center>描述</center></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">@Retention</td>
+<td style="text-align:left">用来定义注解的生命周期，由RetentionPolicy枚举类定义<br>SOURCE:注解在编译器时就会丢弃，不会保留在编译后的class文件中<br>CLASS：注解会保留在class文件中，但是不会加载到JVM中，在运行时候反射是无法获取到相关注解属性<br>RUNTIME:从编译、加载、运行期间会一直保留，可以通过反射的方式获取</td>
+</tr>
+<tr>
+<td style="text-align:left">@Target</td>
+<td style="text-align:left">注解的作用域，ElementType枚举类定义<br>CONSTRUCTOR：注解用于  构造函数<br>FIELD：注解用于 成员变量（包括枚举）<br>LOCAL_VARIABLE：注解用于  局部变量<br>METHOD：注解用于  方法<br>PACKAGE：注解用于 包<br>PARAMETER：注解用于 方法中参数<br>TYPE：注解用于  类、接口、枚举类<br>ANNOTATION_TYPE：注解用于 注解，该注解属于元注解</td>
+</tr>
+<tr>
+<td style="text-align:left">@Documented</td>
+<td style="text-align:left">表示注解会被包含在Java API文档中</td>
+</tr>
+<tr>
+<td style="text-align:left">@Inherited</td>
+<td style="text-align:left">允许子类继承父类的注解</td>
+</tr>
+</tbody>
+</table>
+<h5 id="自定义注解"><a href="#自定义注解" class="headerlink" title="自定义注解"></a>自定义注解</h5><blockquote>
+<p>自定义@BindView注解</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Retention</span>(RetentionPolicy.CLASS)</div><div class="line"><span class="meta">@Target</span>(&#123;ElementType.FIELD&#125;)</div><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> BindView &#123;</div><div class="line">	</div><div class="line">    <span class="meta">@IdRes</span> <span class="function"><span class="keyword">int</span> <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> -1</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="解析注解"><a href="#解析注解" class="headerlink" title="解析注解"></a>解析注解</h5><ul>
+<li>通过反射的方式，在运行时期获取 value </li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@BindView</span>(R.id.tv_content)</div><div class="line">    <span class="keyword">public</span> TextView mTvContent;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        </div><div class="line">        Class&lt;? extends MainActivity&gt; clazz = getClass();</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            Field mTvContent = clazz.getField(<span class="string">"mTvContent"</span>);</div><div class="line">            <span class="comment">//属性字段上是否为@BindView修饰</span></div><div class="line">            <span class="keyword">if</span> (mTvContent.isAnnotationPresent(BindView.class)) &#123;</div><div class="line">                BindView annotation = mTvContent.getAnnotation(BindView.class);</div><div class="line">                <span class="comment">//是否是@BindView注解</span></div><div class="line">                <span class="keyword">if</span> (<span class="keyword">null</span> == annotation) &#123;</div><div class="line">                    Log.e(<span class="string">"TAG"</span>, <span class="string">"未获取到相关注解: "</span>);</div><div class="line">                &#125; <span class="keyword">else</span> &#123;</div><div class="line">                    Log.e(<span class="string">"TAG"</span>, <span class="string">"annotation value is "</span> + annotation.value() + <span class="string">" mTvContent id is "</span> + R.id.tv_content);</div><div class="line">                &#125;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                Annotation[] annotations = mTvContent.getAnnotations();</div><div class="line">                Log.e(<span class="string">"TAG"</span>, <span class="string">"注解长度: "</span>+annotations.length);</div><div class="line">                <span class="keyword">if</span> (<span class="number">0</span>==annotations.length) &#123;</div><div class="line">                    Log.e(<span class="string">"TAG"</span>, <span class="string">"未获取到相关注解"</span>);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">catch</span> (NoSuchFieldException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>打印的结果：</p>
+<p>TAG: 注解长度: 0<br>未获取到相关注解</p>
+</blockquote>
+<p>打印结果没有问题，因为@BindView的生命周期为 CLASS ，注解虽然会保留在class文件中，但是不会加载到JVM中， 我们在运行时候反射是无法获取到相关注解属性</p>
+<ul>
+<li>修改BindView之后</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//修改为 RUNTIME </span></div><div class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</div><div class="line"><span class="meta">@Target</span>(&#123;ElementType.FIELD&#125;)</div><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> BindView &#123;</div><div class="line"></div><div class="line">    <span class="meta">@IdRes</span> <span class="function"><span class="keyword">int</span> <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> -1</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>打印的结果：<br>TAG: annotation value is 2131165325 mTvContent id is 2131165325</p>
+</blockquote>
+<p>修改了注解的Retention之后，可以正常获取value值，所以注解在使用时多多注意@Target、@Retention使用。</p>
+<h5 id="下节介绍"><a href="#下节介绍" class="headerlink" title="下节介绍"></a>下节介绍</h5><p>注解相关的描述到此就结束了，下一节先介绍如何配置AS,让我们能够<strong>debug</strong>编译时期代码，然后再介绍通过APT编写自定义ButterKnife。感谢观看。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 随手记 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 注解 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[EventBus巧用APT插件提升性能]]></title>
       <url>/2019/07/30/EventBus%E5%B7%A7%E7%94%A8APT%E6%8F%92%E4%BB%B6%E6%8F%90%E5%8D%87%E6%80%A7%E8%83%BD/</url>
       <content type="html"><![CDATA[<p>在上一篇研究了<a href="https://penghuanliang.github.io/2019/07/29/EventBus%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" target="_blank" rel="external">EventBus源码</a>时，默认情况下EventBus是通过在运行时反射的方式去获取订阅者中所有@Subscribe注解的方法信息，这种方式是比较损耗性能的。</p>
