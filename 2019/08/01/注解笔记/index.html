@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="天师">
 <meta property="og:description" content="为什么会有本篇文章？ 现在很多主流库都是通过APT(Annotation Processing Tool 简称注解处理工具)在代码编译时期，通过解析注解，并且生成新能Java文件，减少开发者手动书写代码，极大的提升了开发效率。 本篇在学习APT开发时随手记录的，先简单介绍一下注解、然后写一个小Demo加深印象。  Annotation官网描述 The common interface extend">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-01T08:44:09.113Z">
+<meta property="og:updated_time" content="2019-08-01T08:46:29.779Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="注解笔记">
 <meta name="twitter:description" content="为什么会有本篇文章？ 现在很多主流库都是通过APT(Annotation Processing Tool 简称注解处理工具)在代码编译时期，通过解析注解，并且生成新能Java文件，减少开发者手动书写代码，极大的提升了开发效率。 本篇在学习APT开发时随手记录的，先简单介绍一下注解、然后写一个小Demo加深印象。  Annotation官网描述 The common interface extend">
@@ -390,10 +390,32 @@
 </blockquote>
 <h5 id="元注解定义："><a href="#元注解定义：" class="headerlink" title="元注解定义："></a>元注解定义：</h5><p>​    定义在注解上面的注解，我们就称为元注解，它与一般注解的区别就在于Target的作用范围，举例说明</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//@Documented 将注解中的元素包含到 Javadoc 中去</span></div><div class="line"><span class="meta">@Documented</span></div><div class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</div><div class="line"><span class="comment">//这里作用于ANNOTATION_TYPE，所以@Retention属于元注解</span></div><div class="line"><span class="meta">@Target</span>(&#123;ElementType.ANNOTATION_TYPE&#125;)</div><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Retention &#123;</div><div class="line">    <span class="function">RetentionPolicy <span class="title">value</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h5 id="下面主要介绍-Retention、-Target、-Documented、-Inherited四种常见注解"><a href="#下面主要介绍-Retention、-Target、-Documented、-Inherited四种常见注解" class="headerlink" title="下面主要介绍@Retention、@Target、@Documented、@Inherited四种常见注解"></a>下面主要介绍@Retention、@Target、@Documented、@Inherited四种常见注解</h5><table style="padding:0px;margin:0px;"><br>    <thead><br>        <tr><br>            <th style="width: 100px;">注解</th><br>            <th align="center">描述</th><br>        </tr><br>    </thead><br>    <tbody><br>       <tr><br>           <td align="center">@Retention</td><br>           <td align="left">用来定义注解的生命周期，由RetentionPolicy枚举类定义<br>SOURCE:注解在编译器时就会丢弃，不会保留在编译后的class文件中<br>CLASS：注解会保留在class文件中，但是不会加载到JVM中，在运行时候反射是无法获取到相关注解属性<br>RUNTIME:从编译、加载、运行期间会一直保留，可以通过反射的方式获取<br>           </td><br>       </tr><br>       <tr><br>           <td align="center">@Target</td><br>           <td align="left">注解的作用域，ElementType枚举类定义<br>CONSTRUCTOR：注解用于  构造函数<br>FIELD：注解用于 成员变量（包括枚举）<br>LOCAL_VARIABLE：注解用于  局部变量<br>METHOD：注解用于  方法<br>PACKAGE：注解用于 包<br>PARAMETER：注解用于 方法中参数<br>TYPE：注解用于  类、接口、枚举类<br>ANNOTATION_TYPE：注解用于 注解，该注解属于元注解</td><br>       </tr><br>       <tr><br>       </tr><br>            <td>@Documented</td><br>            <td>表示注解会被包含在Java API文档中</td><br>       <tr><br>            <td>@Inherited</td><br>            <td>允许子类继承父类的注解</td><br>       </tr><br>    </tbody><br></table>
-
-
-
+<h5 id="下面主要介绍-Retention、-Target、-Documented、-Inherited四种常见注解"><a href="#下面主要介绍-Retention、-Target、-Documented、-Inherited四种常见注解" class="headerlink" title="下面主要介绍@Retention、@Target、@Documented、@Inherited四种常见注解"></a>下面主要介绍@Retention、@Target、@Documented、@Inherited四种常见注解</h5><table>
+<thead>
+<tr>
+<th style="text-align:center">注解</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">@Retention</td>
+<td style="text-align:left">用来定义注解的生命周期，由RetentionPolicy枚举类定义<br>SOURCE:注解在编译器时就会丢弃，不会保留在编译后的class文件中<br>CLASS：注解会保留在class文件中，但是不会加载到JVM中，在运行时候反射是无法获取到相关注解属性<br>RUNTIME:从编译、加载、运行期间会一直保留，可以通过反射的方式获取</td>
+</tr>
+<tr>
+<td style="text-align:center">@Target</td>
+<td style="text-align:left">注解的作用域，ElementType枚举类定义<br>CONSTRUCTOR：注解用于  构造函数<br>FIELD：注解用于 成员变量（包括枚举）<br>LOCAL_VARIABLE：注解用于  局部变量<br>METHOD：注解用于  方法<br>PACKAGE：注解用于 包<br>PARAMETER：注解用于 方法中参数<br>TYPE：注解用于  类、接口、枚举类<br>ANNOTATION_TYPE：注解用于 注解，该注解属于元注解</td>
+</tr>
+<tr>
+<td style="text-align:center">@Documented</td>
+<td style="text-align:left">表示注解会被包含在Java API文档中</td>
+</tr>
+<tr>
+<td style="text-align:center">@Inherited</td>
+<td style="text-align:left">允许子类继承父类的注解</td>
+</tr>
+</tbody>
+</table>
 <h5 id="自定义注解"><a href="#自定义注解" class="headerlink" title="自定义注解"></a>自定义注解</h5><blockquote>
 <p>自定义@BindView注解</p>
 </blockquote>
