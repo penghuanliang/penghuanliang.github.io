@@ -21,32 +21,8 @@
 </blockquote>
 <h5 id="元注解定义："><a href="#元注解定义：" class="headerlink" title="元注解定义："></a>元注解定义：</h5><p>​    定义在注解上面的注解，我们就称为元注解，它与一般注解的区别就在于Target的作用范围，举例说明</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//@Documented 将注解中的元素包含到 Javadoc 中去</span></div><div class="line"><span class="meta">@Documented</span></div><div class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</div><div class="line"><span class="comment">//这里作用于ANNOTATION_TYPE，所以@Retention属于元注解</span></div><div class="line"><span class="meta">@Target</span>(&#123;ElementType.ANNOTATION_TYPE&#125;)</div><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Retention &#123;</div><div class="line">    <span class="function">RetentionPolicy <span class="title">value</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h5 id="下面主要介绍-Retention、-Target、-Documented、-Inherited四种常见注解"><a href="#下面主要介绍-Retention、-Target、-Documented、-Inherited四种常见注解" class="headerlink" title="下面主要介绍@Retention、@Target、@Documented、@Inherited四种常见注解"></a>下面主要介绍@Retention、@Target、@Documented、@Inherited四种常见注解</h5><table>
-<thead>
-<tr>
-<th style="text-align:left"><center>注解</center></th>
-<th style="text-align:left"><center>描述</center></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">@Retention</td>
-<td style="text-align:left">用来定义注解的生命周期，由RetentionPolicy枚举类定义<br>SOURCE:注解在编译器时就会丢弃，不会保留在编译后的class文件中<br>CLASS：注解会保留在class文件中，但是不会加载到JVM中，在运行时候反射是无法获取到相关注解属性<br>RUNTIME:从编译、加载、运行期间会一直保留，可以通过反射的方式获取</td>
-</tr>
-<tr>
-<td style="text-align:left">@Target</td>
-<td style="text-align:left">注解的作用域，ElementType枚举类定义<br>CONSTRUCTOR：注解用于  构造函数<br>FIELD：注解用于 成员变量（包括枚举）<br>LOCAL_VARIABLE：注解用于  局部变量<br>METHOD：注解用于  方法<br>PACKAGE：注解用于 包<br>PARAMETER：注解用于 方法中参数<br>TYPE：注解用于  类、接口、枚举类<br>ANNOTATION_TYPE：注解用于 注解，该注解属于元注解</td>
-</tr>
-<tr>
-<td style="text-align:left">@Documented</td>
-<td style="text-align:left">表示注解会被包含在Java API文档中</td>
-</tr>
-<tr>
-<td style="text-align:left">@Inherited</td>
-<td style="text-align:left">允许子类继承父类的注解</td>
-</tr>
-</tbody>
-</table>
+<h5 id="下面主要介绍-Retention、-Target、-Documented、-Inherited四种常见注解"><a href="#下面主要介绍-Retention、-Target、-Documented、-Inherited四种常见注解" class="headerlink" title="下面主要介绍@Retention、@Target、@Documented、@Inherited四种常见注解"></a>下面主要介绍@Retention、@Target、@Documented、@Inherited四种常见注解</h5><table><br>    <tr><br>        <td style="text-align:center">注解</td><br>        <td style="text-align:center">描述</td><br>    </tr><br>    <tr><br>        <td>@Retention</td><br>        <td>用来定义注解的生命周期，由RetentionPolicy枚举类定义<br><br>            SOURCE:注解在编译器时就会丢弃，不会保留在编译后的class文件中<br><br>            CLASS：注解会保留在class文件中，但是不会加载到JVM中，在运行时候反射是无法获取到相关注解属性<br><br>            RUNTIME:从编译、加载、运行期间会一直保留，可以通过反射的方式获取<br>        </td><br>    </tr><br>    <tr><br>        <td>@Target</td><br>        <td>注解的作用域，ElementType枚举类定义<br><br>            CONSTRUCTOR：注解用于  构造函数<br><br>            FIELD：注解用于 成员变量（包括枚举）<br><br>            LOCAL_VARIABLE：注解用于  局部变量<br><br>            METHOD：注解用于  方法<br><br>            PACKAGE：注解用于 包<br><br>            PARAMETER：注解用于 方法中参数<br><br>            TYPE：注解用于  类、接口、枚举类<br><br>            ANNOTATION_TYPE：注解用于 注解，该注解属于元注解<br>        </td><br>    </tr><br>    <tr><br>        <td>@Documented</td><br>        <td>表示注解会被包含在Java API文档中</td><br>    </tr><br>     <tr><br>        <td>@Inherited</td><br>        <td>允许子类继承父类的注解</td><br>    </tr><br></table>
+
 <h5 id="自定义注解"><a href="#自定义注解" class="headerlink" title="自定义注解"></a>自定义注解</h5><blockquote>
 <p>自定义@BindView注解</p>
 </blockquote>
@@ -59,7 +35,7 @@
 <p>打印的结果：</p>
 <p>TAG: 注解长度: 0<br>未获取到相关注解</p>
 </blockquote>
-<p>打印结果没有问题，因为@BindView的生命周期为 CLASS ，注解虽然会保留在class文件中，但是不会加载到JVM中， 我们在运行时候反射是无法获取到相关注解属性</p>
+<p>打印结果没有问题，因为@BindView的生命周期为 CLASS ，注解虽然会保留在class文件中，但是不会加载到JVM中， 所以我们在运行时候反射是无法获取到相关注解属性。</p>
 <ul>
 <li>修改BindView之后</li>
 </ul>
