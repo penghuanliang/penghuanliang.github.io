@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,源码分析," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="又到一年七夕节，祝愿全天下的有情人终成眷属。 一直以来项目中都是使用别人的框架，使用起来很熟练，但是源码一般都是大致粗略的看一下，弄懂整个流程就不去管他了，这段时间我都是在跟源码打交到深有体会，除非知识有一定的沉淀，否则学到的终究只是皮毛。所以打算想要学习的更深入，建议还是多多看源码，不光技术提升，对设计模式、封装思想也会有更深刻的领悟。 本篇文章不涉及如何自定义ButterKnifeAPT插件，">
+<meta name="keywords" content="Android,源码分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ButterKnife源码分析">
+<meta property="og:url" content="http://yoursite.com/2019/08/07/ButterKnife源码分析/index.html">
+<meta property="og:site_name" content="天师">
+<meta property="og:description" content="又到一年七夕节，祝愿全天下的有情人终成眷属。 一直以来项目中都是使用别人的框架，使用起来很熟练，但是源码一般都是大致粗略的看一下，弄懂整个流程就不去管他了，这段时间我都是在跟源码打交到深有体会，除非知识有一定的沉淀，否则学到的终究只是皮毛。所以打算想要学习的更深入，建议还是多多看源码，不光技术提升，对设计模式、封装思想也会有更深刻的领悟。 本篇文章不涉及如何自定义ButterKnifeAPT插件，">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://penghuanliang.github.io/images/pics/bg_butterknife_result.png">
+<meta property="og:image" content="https://penghuanliang.github.io/images/pics/ic_butterknife_process.png">
+<meta property="og:updated_time" content="2019-08-07T10:08:55.069Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ButterKnife源码分析">
+<meta name="twitter:description" content="又到一年七夕节，祝愿全天下的有情人终成眷属。 一直以来项目中都是使用别人的框架，使用起来很熟练，但是源码一般都是大致粗略的看一下，弄懂整个流程就不去管他了，这段时间我都是在跟源码打交到深有体会，除非知识有一定的沉淀，否则学到的终究只是皮毛。所以打算想要学习的更深入，建议还是多多看源码，不光技术提升，对设计模式、封装思想也会有更深刻的领悟。 本篇文章不涉及如何自定义ButterKnifeAPT插件，">
+<meta name="twitter:image" content="https://penghuanliang.github.io/images/pics/bg_butterknife_result.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/08/07/ButterKnife源码分析/"/>
+
+
+
+
+
+  <title>ButterKnife源码分析 | 天师</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">天师</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">天下事有难易乎？为之，则难者亦易矣；不为，则易者亦难矣。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/07/ButterKnife源码分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="欢亮">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天师">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ButterKnife源码分析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-07T18:04:22+08:00">
+                2019-08-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/源码分析/" itemprop="url" rel="index">
+                    <span itemprop="name">源码分析</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>又到一年七夕节，祝愿全天下的有情人终成眷属。</p>
+<p>一直以来项目中都是使用别人的框架，使用起来很熟练，但是源码一般都是大致粗略的看一下，弄懂整个流程就不去管他了，这段时间我都是在跟源码打交到深有体会，除非知识有一定的沉淀，否则学到的终究只是皮毛。所以打算想要学习的更深入，建议还是多多看源码，不光技术提升，对设计模式、封装思想也会有更深刻的领悟。</p>
+<p>本篇文章不涉及如何自定义ButterKnifeAPT插件，如果需要请浏览我写的Demo，效果图如下：</p>
+<p><img src="https://penghuanliang.github.io/images/pics/bg_butterknife_result.png" alt="1565162963976"></p>
+<blockquote>
+<p>基本的BindView()，以及OnClick()是没有问题的，至于其它的BindColor()原理都是一样</p>
+</blockquote>
+<h3 id="ButterKnife简介"><a href="#ButterKnife简介" class="headerlink" title="ButterKnife简介"></a>ButterKnife简介</h3><p>ButterKnife是由Android之神<a href="https://github.com/JakeWharton" target="_blank" rel="external">JakeWharton</a>开发出来的，通过APT在编译时期获取Java代码中相应的注解并生成对应代码，告别了传统的手动findViewById()，setOnClickListener()等，从而提升代码可读性、开发效率。</p>
+<h3 id="ButterKnife工作流程"><a href="#ButterKnife工作流程" class="headerlink" title="ButterKnife工作流程"></a>ButterKnife工作流程</h3><p><img src="https://penghuanliang.github.io/images/pics/ic_butterknife_process.png" alt="流程图"></p>
+<blockquote>
+<p>APT工作流程大致为两步：</p>
+<ol>
+<li>APT通过扫描解析Java源文件，获取相应的注解，并通过注解生成相应的Java文件。</li>
+<li>生成的Java文件后继续编译，APT继续扫描，如果有相应的文件生成则继续重复此步骤。</li>
+</ol>
+</blockquote>
+<h3 id="ButterKnife源码分析"><a href="#ButterKnife源码分析" class="headerlink" title="ButterKnife源码分析"></a>ButterKnife源码分析</h3><ul>
+<li><h5 id="首先看ButterKnifeProcessor"><a href="#首先看ButterKnifeProcessor" class="headerlink" title="首先看ButterKnifeProcessor"></a>首先看ButterKnifeProcessor</h5></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@AutoService</span>(Processor.class)</div><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ButterKnifeProcessor</span> <span class="keyword">extends</span> <span class="title">AbstractProcessor</span> </span>&#123;</div><div class="line">    <span class="comment">//方法注解、监听一些基本事件</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> List&lt;Class&lt;? extends Annotation&gt;&gt; LISTENERS = Arrays.asList(</div><div class="line">            OnCheckedChanged.class,</div><div class="line">            OnClick.class,</div><div class="line">            OnEditorAction.class,</div><div class="line">            OnFocusChange.class, </div><div class="line">            OnItemClick.class, </div><div class="line">            OnItemLongClick.class, </div><div class="line">            OnItemSelected.class, </div><div class="line">            OnLongClick.class, </div><div class="line">            OnPageChange.class, </div><div class="line">            OnTextChanged.class, </div><div class="line">            OnTouch.class </div><div class="line">    );</div><div class="line">    <span class="comment">//...省略</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">process</span><span class="params">(Set&lt;? extends TypeElement&gt; elements, RoundEnvironment env)</span> </span>&#123;</div><div class="line">        <span class="comment">//解析注解</span></div><div class="line">        Map&lt;TypeElement, BindingSet&gt; bindingMap = findAndParseTargets(env);</div><div class="line">        <span class="comment">//遍历注解生成java文件</span></div><div class="line">        <span class="keyword">for</span> (Map.Entry&lt;TypeElement, BindingSet&gt; entry : bindingMap.entrySet()) &#123;</div><div class="line">            TypeElement typeElement = entry.getKey();</div><div class="line">            BindingSet binding = entry.getValue();</div><div class="line">            </div><div class="line">            JavaFile javaFile = binding.brewJava(sdk, debuggable);</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                javaFile.writeTo(filer);</div><div class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">                error(typeElement, <span class="string">"Unable to write binding for type %s: %s"</span>, </div><div class="line">                      typeElement, e.getMessage());</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>接下来我们分析一下findAndParseTargets()</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> Map&lt;TypeElement, BindingSet&gt; <span class="title">findAndParseTargets</span><span class="params">(RoundEnvironment env)</span> </span>&#123;</div><div class="line">        Map&lt;TypeElement, BindingSet.Builder&gt; builderMap = <span class="keyword">new</span> LinkedHashMap&lt;&gt;();</div><div class="line">        Set&lt;TypeElement&gt; erasedTargetNames = <span class="keyword">new</span> LinkedHashSet&lt;&gt;();</div><div class="line">    	<span class="comment">//...省略其它注解</span></div><div class="line">    	<span class="comment">//遍历@BindView,然后将其过滤存储起来</span></div><div class="line">        <span class="keyword">for</span> (Element element : env.getElementsAnnotatedWith(BindView.class)) &#123;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                parseBindView(element, builderMap);</div><div class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">                error(element, e.getMessage());</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 遍历各种事件,然后将其过滤存储起来</span></div><div class="line">        <span class="keyword">for</span> (Class&lt;? extends Annotation&gt; listener : LISTENERS) &#123;</div><div class="line">            findAndParseListener(env, listener, builderMap, erasedTargetNames);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> builderMap;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<ul>
+<li><h5 id="分析-BindView-parseBindView-做了什么"><a href="#分析-BindView-parseBindView-做了什么" class="headerlink" title="@分析 BindView#parseBindView()做了什么"></a>@分析 BindView#parseBindView()做了什么</h5></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">parseBindView</span><span class="params">(Element element, Map&lt;TypeElement, BindingSet.Builder&gt; builderMap,</span></span></div><div class="line"><span class="function"><span class="params">                               Set&lt;TypeElement&gt; erasedTargetNames)</span> </span>&#123;</div><div class="line">        TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();</div><div class="line"></div><div class="line">        <span class="comment">// 这里先做校验，检测@BindView注解是否作用在field属性上,检测是否作用在系统类中的属性上,下面列出代码</span></div><div class="line">        <span class="keyword">boolean</span> hasError = isInaccessibleViaGeneratedCode(BindView.class, <span class="string">"fields"</span>, element)</div><div class="line">                || isBindingInWrongPackage(BindView.class, element);</div><div class="line"></div><div class="line">        <span class="comment">// 校验元素是否作用在View 或者 继承至View的子类上</span></div><div class="line">        TypeMirror elementType = element.asType();</div><div class="line">        <span class="keyword">if</span> (elementType.getKind() == TypeKind.TYPEVAR) &#123;</div><div class="line">            TypeVariable typeVariable = (TypeVariable) elementType;</div><div class="line">            elementType = typeVariable.getUpperBound();</div><div class="line">        &#125;</div><div class="line">        Name qualifiedName = enclosingElement.getQualifiedName();</div><div class="line">        Name simpleName = element.getSimpleName();</div><div class="line">        <span class="keyword">if</span> (!isSubtypeOfType(elementType, VIEW_TYPE) &amp;&amp; !isInterface(elementType)) &#123;</div><div class="line">            <span class="keyword">if</span> (elementType.getKind() == TypeKind.ERROR) &#123;</div><div class="line">                note(element, <span class="string">"@%s field with unresolved type (%s) "</span></div><div class="line">                                + <span class="string">"must elsewhere be generated as a View or interface. (%s.%s)"</span>,</div><div class="line">                        BindView.class.getSimpleName(), elementType, qualifiedName, simpleName);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                error(element, <span class="string">"@%s fields must extend from View or be an interface. (%s.%s)"</span>,</div><div class="line">                        BindView.class.getSimpleName(), qualifiedName, simpleName);</div><div class="line">                hasError = <span class="keyword">true</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (hasError) &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 获取属性信息: id 、 name  </span></div><div class="line">        <span class="keyword">int</span> id = element.getAnnotation(BindView.class).value();</div><div class="line">        BindingSet.Builder builder = builderMap.get(enclosingElement);</div><div class="line">        Id resourceId = elementToId(element, BindView.class, id);</div><div class="line">        <span class="keyword">if</span> (builder != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="comment">//从集合中获取,如果已经绑定过,则输出error信息</span></div><div class="line">            String existingBindingName = builder.findExistingBindingName(resourceId);</div><div class="line">            <span class="keyword">if</span> (existingBindingName != <span class="keyword">null</span>) &#123;</div><div class="line">                error(element, <span class="string">"Attempt to use @%s for an already bound ID %d on '%s'. (%s.%s)"</span>,</div><div class="line">                        BindView.class.getSimpleName(), id, existingBindingName,</div><div class="line">                        enclosingElement.getQualifiedName(), element.getSimpleName());</div><div class="line">                <span class="keyword">return</span>;</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">//初始化 BindingSet.Builder,并将其放入集合中</span></div><div class="line">            builder = getOrCreateBindingBuilder(builderMap, enclosingElement);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        String name = simpleName.toString();</div><div class="line">        TypeName type = TypeName.get(elementType);</div><div class="line">        <span class="keyword">boolean</span> required = isFieldRequired(element);</div><div class="line">    	<span class="comment">//将属性添加至BindingSet.Builder中</span></div><div class="line">        builder.addField(resourceId, <span class="keyword">new</span> FieldViewBinding(name, type, required));</div><div class="line"></div><div class="line">        <span class="comment">// Add the type-erased version to the valid binding targets set.</span></div><div class="line">        erasedTargetNames.add(enclosingElement);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>这里主要做了三件事情：</p>
+<ol>
+<li>校验@BindView作用范围、作用对象是否正确，其次校验是否是作用于View对象获取View的子类对象。</li>
+<li>通过创建BindingSet.Builder对象，然后将获取到的注解 id、name 、type 存至该对象。</li>
+<li>将存BindingSet.Builder存放到相应的集合中。</li>
+</ol>
+<p>这里创建BindingSet.Builder对象不仅仅是用于存储某一个注解的单独属性，它存储的是同一个类型所有注解属性、方法，用于后续遍历生成Java文件时写入相关的代码</p>
+</blockquote>
+<ol>
+<li>校验如下：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//1.这个方法主要是校验修饰符、作用是否在class中、最后再校验class修饰符</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isInaccessibleViaGeneratedCode</span><span class="params">(Class&lt;? extends Annotation&gt; annotationClass,</span></span></div><div class="line"><span class="function"><span class="params">                                                   String targetThing, Element element)</span> </span>&#123;</div><div class="line">        <span class="keyword">boolean</span> hasError = <span class="keyword">false</span>;</div><div class="line">    	<span class="comment">//返回当前 类</span></div><div class="line">        TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();</div><div class="line"></div><div class="line">        <span class="comment">// 判断field修饰符,如果时private static修饰 抛出异常</span></div><div class="line">        Set&lt;Modifier&gt; modifiers = element.getModifiers();</div><div class="line">        <span class="keyword">if</span> (modifiers.contains(PRIVATE) || modifiers.contains(STATIC)) &#123;</div><div class="line">            error(element, <span class="string">"@%s %s must not be private or static. (%s.%s)"</span>,</div><div class="line">                    annotationClass.getSimpleName(), targetThing, enclosingElement.getQualifiedName(),</div><div class="line">                    element.getSimpleName());</div><div class="line">            hasError = <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 如果不是在class中使用该注解,抛出异常</span></div><div class="line">        <span class="keyword">if</span> (enclosingElement.getKind() != CLASS) &#123;</div><div class="line">            error(enclosingElement, <span class="string">"@%s %s may only be contained in classes. (%s.%s)"</span>,</div><div class="line">                    annotationClass.getSimpleName(), targetThing, enclosingElement.getQualifiedName(),</div><div class="line">                    element.getSimpleName());</div><div class="line">            hasError = <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 校验类的修饰符</span></div><div class="line">        <span class="keyword">if</span> (enclosingElement.getModifiers().contains(PRIVATE)) &#123;</div><div class="line">            error(enclosingElement, <span class="string">"@%s %s may not be contained in private classes. (%s.%s)"</span>,</div><div class="line">                    annotationClass.getSimpleName(), targetThing, enclosingElement.getQualifiedName(),</div><div class="line">                    element.getSimpleName());</div><div class="line">            hasError = <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> hasError;</div><div class="line">    &#125;</div><div class="line"><span class="comment">//2.这个方法主要是校验class位置是否为系统类 </span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isBindingInWrongPackage</span><span class="params">(Class&lt;? extends Annotation&gt; annotationClass,</span></span></div><div class="line"><span class="function"><span class="params">                                            Element element)</span> </span>&#123;</div><div class="line">        TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();</div><div class="line">        String qualifiedName = enclosingElement.getQualifiedName().toString();</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (qualifiedName.startsWith(<span class="string">"android."</span>)) &#123;</div><div class="line">            error(element, <span class="string">"@%s-annotated class incorrectly in Android framework package. (%s)"</span>,</div><div class="line">                    annotationClass.getSimpleName(), qualifiedName);</div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (qualifiedName.startsWith(<span class="string">"java."</span>)) &#123;</div><div class="line">            error(element, <span class="string">"@%s-annotated class incorrectly in Java framework package. (%s)"</span>,</div><div class="line">                    annotationClass.getSimpleName(), qualifiedName);</div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    &#125;</div><div class="line"><span class="comment">//3.校验类型@BindView时这里传入的typeMirror="android.widget.TextView"、otherType="android.view.View"</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isSubtypeOfType</span><span class="params">(TypeMirror typeMirror, String otherType)</span> </span>&#123;</div><div class="line">    	<span class="comment">//如果两者一致直接 return true</span></div><div class="line">        <span class="keyword">if</span> (isTypeEqual(typeMirror, otherType)) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line">    	<span class="comment">//如果 typeMirror 不是类/接口 return false</span></div><div class="line">        <span class="keyword">if</span> (typeMirror.getKind() != TypeKind.DECLARED) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">    	<span class="comment">//举例: 如果是TextView, declaredType: android.widget.TextView</span></div><div class="line">        DeclaredType declaredType = (DeclaredType) typeMirror;</div><div class="line">    	<span class="comment">// typeArguments 这里主要是用于获取泛型中的属性,判断泛型种类型</span></div><div class="line">        List&lt;? extends TypeMirror&gt; typeArguments = declaredType.getTypeArguments();</div><div class="line">        <span class="keyword">if</span> (typeArguments.size() &gt; <span class="number">0</span>) &#123;</div><div class="line">            StringBuilder typeString = <span class="keyword">new</span> StringBuilder(declaredType.asElement().toString());</div><div class="line">            typeString.append(<span class="string">'&lt;'</span>);</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; typeArguments.size(); i++) &#123;</div><div class="line">                <span class="keyword">if</span> (i &gt; <span class="number">0</span>) &#123;</div><div class="line">                    typeString.append(<span class="string">','</span>);</div><div class="line">                &#125;</div><div class="line">                typeString.append(<span class="string">'?'</span>);</div><div class="line">            &#125;</div><div class="line">            typeString.append(<span class="string">'&gt;'</span>);</div><div class="line">            <span class="keyword">if</span> (typeString.toString().equals(otherType)) &#123;</div><div class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        Element element = declaredType.asElement();</div><div class="line">        <span class="keyword">if</span> (!(element <span class="keyword">instanceof</span> TypeElement)) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">        TypeElement typeElement = (TypeElement) element;</div><div class="line">        TypeMirror superType = typeElement.getSuperclass();</div><div class="line">        <span class="keyword">if</span> (isSubtypeOfType(superType, otherType)) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">for</span> (TypeMirror interfaceType : typeElement.getInterfaces()) &#123;</div><div class="line">            <span class="keyword">if</span> (isSubtypeOfType(interfaceType, otherType)) &#123;</div><div class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>先到这里吧，写着写着就下班了。</p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/源码分析/" rel="tag"># 源码分析</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/01/如何调试AbstractProcessor/" rel="next" title="如何调试AbstractProcessor">
+                <i class="fa fa-chevron-left"></i> 如何调试AbstractProcessor
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="欢亮" />
+            
+              <p class="site-author-name" itemprop="name">欢亮</p>
+              <p class="site-description motion-element" itemprop="description">天下事有难易乎？为之，则难者亦易矣；不为，则易者亦难矣。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/penghuanliang" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://songsongtao.github.io/" title="二松同学" target="_blank">二松同学</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ButterKnife简介"><span class="nav-number">1.</span> <span class="nav-text">ButterKnife简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ButterKnife工作流程"><span class="nav-number">2.</span> <span class="nav-text">ButterKnife工作流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ButterKnife源码分析"><span class="nav-number">3.</span> <span class="nav-text">ButterKnife源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#首先看ButterKnifeProcessor"><span class="nav-number">3.0.1.</span> <span class="nav-text">首先看ButterKnifeProcessor</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#分析-BindView-parseBindView-做了什么"><span class="nav-number">3.0.2.</span> <span class="nav-text">@分析 BindView#parseBindView()做了什么</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">欢亮</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
