@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: true,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="为什么会有本篇文章？ 现在很多主流库都是通过APT(Annotation Processing Tool 简称注解处理工具)在代码编译时期，通过解析注解，并且生成新能Java文件，减少开发者手动书写代码，极大的提升了开发效率。 本篇在学习APT开发时随手记录的，先简单介绍一下注解、然后写一个小Demo加深印象。  Annotation官网描述 The common interface extend">
+<meta name="keywords" content="注解">
+<meta property="og:type" content="article">
+<meta property="og:title" content="注解笔记">
+<meta property="og:url" content="http://yoursite.com/2019/08/01/注解笔记/index.html">
+<meta property="og:site_name" content="天师">
+<meta property="og:description" content="为什么会有本篇文章？ 现在很多主流库都是通过APT(Annotation Processing Tool 简称注解处理工具)在代码编译时期，通过解析注解，并且生成新能Java文件，减少开发者手动书写代码，极大的提升了开发效率。 本篇在学习APT开发时随手记录的，先简单介绍一下注解、然后写一个小Demo加深印象。  Annotation官网描述 The common interface extend">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-01T08:46:29.779Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="注解笔记">
+<meta name="twitter:description" content="为什么会有本篇文章？ 现在很多主流库都是通过APT(Annotation Processing Tool 简称注解处理工具)在代码编译时期，通过解析注解，并且生成新能Java文件，减少开发者手动书写代码，极大的提升了开发效率。 本篇在学习APT开发时随手记录的，先简单介绍一下注解、然后写一个小Demo加深印象。  Annotation官网描述 The common interface extend">
+  <link rel="canonical" href="http://yoursite.com/2019/08/01/注解笔记/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>注解笔记 | 天师</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">天师</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">天下事有难易乎？为之，则难者亦易矣；不为，则易者亦难矣。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section">首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section">分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section">归档</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section">标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section">关于</a>
+
+  </li>
+  </ul>
+
+    
+
+</nav>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/01/注解笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="欢亮">
+      <meta itemprop="description" content="天下事有难易乎？为之，则难者亦易矣；不为，则易者亦难矣。">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天师">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">注解笔记
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-01 15:38:23 / 修改时间：16:46:29" itemprop="dateCreated datePublished" datetime="2019-08-01T15:38:23+08:00">2019-08-01</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/随手记/" itemprop="url" rel="index"><span itemprop="name">随手记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h5 id="为什么会有本篇文章？"><a href="#为什么会有本篇文章？" class="headerlink" title="为什么会有本篇文章？"></a>为什么会有本篇文章？</h5><blockquote>
+<p>现在很多主流库都是通过APT(Annotation Processing Tool 简称注解处理工具)在代码编译时期，通过解析注解，并且生成新能Java文件，减少开发者手动书写代码，极大的提升了开发效率。</p>
+<p>本篇在学习APT开发时随手记录的，先简单介绍一下注解、然后写一个小Demo加深印象。</p>
+</blockquote>
+<h5 id="Annotation官网描述"><a href="#Annotation官网描述" class="headerlink" title="Annotation官网描述"></a>Annotation官网描述</h5><blockquote>
+<p>The common interface extended by all annotation types. Note that an interface that manually extends this one does <em>not</em> define an annotation type. Also note that this interface does not itself define an annotation type.</p>
+<p>大致的意思是：所有的注解类型接口都继承Annotation接口，自定义继承Annotation不会定义注解类型。</p>
+<p>个人认为：注解就相当于代码注释一样，然后我们可以通过获取到其属性做一下相关操作，从而优化整个项目。</p>
+</blockquote>
+<h5 id="基本介绍："><a href="#基本介绍：" class="headerlink" title="基本介绍："></a>基本介绍：</h5><p>​    举例介绍</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//本身BindView是一个注解，@Retention</span></span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.CLASS)</span><br><span class="line"><span class="meta">@Target</span>(ElementType.FIELD)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> BindView &#123;</span><br><span class="line">	<span class="comment">//可以给定一个默认值</span></span><br><span class="line">    <span class="meta">@IdRes</span> <span class="function"><span class="keyword">int</span> <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> -1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>继承至Annotation接口的接口，如@BindVeiw、@Retention、@Target都属于注解，但是@Retention、@Target又有区别，它们定义为：<strong>元注解</strong></p>
+</blockquote>
+<h5 id="元注解定义："><a href="#元注解定义：" class="headerlink" title="元注解定义："></a>元注解定义：</h5><p>​    定义在注解上面的注解，我们就称为元注解，它与一般注解的区别就在于Target的作用范围，举例说明</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//@Documented 将注解中的元素包含到 Javadoc 中去</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="comment">//这里作用于ANNOTATION_TYPE，所以@Retention属于元注解</span></span><br><span class="line"><span class="meta">@Target</span>(&#123;ElementType.ANNOTATION_TYPE&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Retention &#123;</span><br><span class="line">    <span class="function">RetentionPolicy <span class="title">value</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="下面主要介绍-Retention、-Target、-Documented、-Inherited四种常见注解"><a href="#下面主要介绍-Retention、-Target、-Documented、-Inherited四种常见注解" class="headerlink" title="下面主要介绍@Retention、@Target、@Documented、@Inherited四种常见注解"></a>下面主要介绍@Retention、@Target、@Documented、@Inherited四种常见注解</h5><table>
+<thead>
+<tr>
+<th align="center">注解</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">@Retention</td>
+<td align="left">用来定义注解的生命周期，由RetentionPolicy枚举类定义<br>SOURCE:注解在编译器时就会丢弃，不会保留在编译后的class文件中<br>CLASS：注解会保留在class文件中，但是不会加载到JVM中，在运行时候反射是无法获取到相关注解属性<br>RUNTIME:从编译、加载、运行期间会一直保留，可以通过反射的方式获取</td>
+</tr>
+<tr>
+<td align="center">@Target</td>
+<td align="left">注解的作用域，ElementType枚举类定义<br>CONSTRUCTOR：注解用于  构造函数<br>FIELD：注解用于 成员变量（包括枚举）<br>LOCAL_VARIABLE：注解用于  局部变量<br>METHOD：注解用于  方法<br>PACKAGE：注解用于 包<br>PARAMETER：注解用于 方法中参数<br>TYPE：注解用于  类、接口、枚举类<br>ANNOTATION_TYPE：注解用于 注解，该注解属于元注解</td>
+</tr>
+<tr>
+<td align="center">@Documented</td>
+<td align="left">表示注解会被包含在Java API文档中</td>
+</tr>
+<tr>
+<td align="center">@Inherited</td>
+<td align="left">允许子类继承父类的注解</td>
+</tr>
+</tbody></table>
+<h5 id="自定义注解"><a href="#自定义注解" class="headerlink" title="自定义注解"></a>自定义注解</h5><blockquote>
+<p>自定义@BindView注解</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.CLASS)</span><br><span class="line"><span class="meta">@Target</span>(&#123;ElementType.FIELD&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> BindView &#123;</span><br><span class="line">	</span><br><span class="line">    <span class="meta">@IdRes</span> <span class="function"><span class="keyword">int</span> <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> -1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="解析注解"><a href="#解析注解" class="headerlink" title="解析注解"></a>解析注解</h5><ul>
+<li>通过反射的方式，在运行时期获取 value </li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@BindView</span>(R.id.tv_content)</span><br><span class="line">    <span class="keyword">public</span> TextView mTvContent;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        </span><br><span class="line">        Class&lt;? extends MainActivity&gt; clazz = getClass();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Field mTvContent = clazz.getField(<span class="string">"mTvContent"</span>);</span><br><span class="line">            <span class="comment">//属性字段上是否为@BindView修饰</span></span><br><span class="line">            <span class="keyword">if</span> (mTvContent.isAnnotationPresent(BindView.class)) &#123;</span><br><span class="line">                BindView annotation = mTvContent.getAnnotation(BindView.class);</span><br><span class="line">                <span class="comment">//是否是@BindView注解</span></span><br><span class="line">                <span class="keyword">if</span> (<span class="keyword">null</span> == annotation) &#123;</span><br><span class="line">                    Log.e(<span class="string">"TAG"</span>, <span class="string">"未获取到相关注解: "</span>);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    Log.e(<span class="string">"TAG"</span>, <span class="string">"annotation value is "</span> + annotation.value() + <span class="string">" mTvContent id is "</span> + R.id.tv_content);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                Annotation[] annotations = mTvContent.getAnnotations();</span><br><span class="line">                Log.e(<span class="string">"TAG"</span>, <span class="string">"注解长度: "</span>+annotations.length);</span><br><span class="line">                <span class="keyword">if</span> (<span class="number">0</span>==annotations.length) &#123;</span><br><span class="line">                    Log.e(<span class="string">"TAG"</span>, <span class="string">"未获取到相关注解"</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (NoSuchFieldException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>打印的结果：</p>
+<p>TAG: 注解长度: 0<br>未获取到相关注解</p>
+</blockquote>
+<p>打印结果没有问题，因为@BindView的生命周期为 CLASS ，注解虽然会保留在class文件中，但是不会加载到JVM中， 所以我们在运行时候反射是无法获取到相关注解属性。</p>
+<ul>
+<li>修改BindView之后</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//修改为 RUNTIME </span></span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Target</span>(&#123;ElementType.FIELD&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> BindView &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@IdRes</span> <span class="function"><span class="keyword">int</span> <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> -1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>打印的结果：<br>TAG: annotation value is 2131165325 mTvContent id is 2131165325</p>
+</blockquote>
+<p>修改了注解的Retention之后，可以正常获取value值，所以注解在使用时多多注意@Target、@Retention使用。</p>
+<h5 id="下节介绍"><a href="#下节介绍" class="headerlink" title="下节介绍"></a>下节介绍</h5><p>注解相关的描述到此就结束了，下一节先介绍如何配置AS,让我们能够<strong>debug</strong>编译时期代码，然后再介绍通过APT编写自定义ButterKnife。感谢观看。</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/注解/" rel="tag"># 注解</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/07/30/EventBus巧用APT插件提升性能/" rel="next" title="EventBus巧用APT插件提升性能">
+                  <i class="fa fa-chevron-left"></i> EventBus巧用APT插件提升性能
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/08/01/如何调试AbstractProcessor/" rel="prev" title="如何调试AbstractProcessor">
+                  如何调试AbstractProcessor <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.jpg"
+      alt="欢亮">
+  <p class="site-author-name" itemprop="name">欢亮</p>
+  <div class="site-description motion-element" itemprop="description">天下事有难易乎？为之，则难者亦易矣；不为，则易者亦难矣。</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/penghuanliang" title="GitHub &rarr; https://github.com/penghuanliang" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:1092860160@qq.com" title="E-Mail &rarr; mailto:1092860160@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element links-of-blogroll-block">
+    <div class="links-of-blogroll-title">
+      <i class="fa  fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://songsongtao.github.io/" title="https://songsongtao.github.io/" rel="noopener" target="_blank">二松同学</a>
+        </li>
+      
+    </ul>
+  </div>
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#为什么会有本篇文章？"><span class="nav-number">1.</span> <span class="nav-text">为什么会有本篇文章？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Annotation官网描述"><span class="nav-number">2.</span> <span class="nav-text">Annotation官网描述</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#基本介绍："><span class="nav-number">3.</span> <span class="nav-text">基本介绍：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#元注解定义："><span class="nav-number">4.</span> <span class="nav-text">元注解定义：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#下面主要介绍-Retention、-Target、-Documented、-Inherited四种常见注解"><span class="nav-number">5.</span> <span class="nav-text">下面主要介绍@Retention、@Target、@Documented、@Inherited四种常见注解</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#自定义注解"><span class="nav-number">6.</span> <span class="nav-text">自定义注解</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#解析注解"><span class="nav-number">7.</span> <span class="nav-text">解析注解</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#下节介绍"><span class="nav-number">8.</span> <span class="nav-text">下节介绍</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">欢亮</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>
